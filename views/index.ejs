@@ -104,13 +104,31 @@
     async function fetchPrices(){
         try {
             const res = await fetch("/api/prices");
+            if(!res.ok){
+                // Log error if backend returns a non-success status
+            console.error(`Error Fetching prices: Server returned status ${res.status}`);
+            // Throw an error to ensure code goes to the catch block
+            throw new Error(`Server error: ${res.status}`);
+            } 
+            // only read the body onec here:
             const data = await res.json();
 
-            btcPriceElem.textContent = `$${data.bitcoin.price}`;
-            btcLastUpdatedElem.textContent = new Date(data.bitcoin.updated).toLocaleTimeString();
+            // update bitcoin priec here:
+            if(data.bitcoin && data.bitcoin.price){
 
-            ethPriceElem.textContent = `$${data.ethereum.price}`;
-            ethLastUpdatedElem.textContent = new Date(data.ethereum.updated).toLocaleTimeString();
+                btcPriceElem.textContent = `$${parseFloat(data.bitcoin.price).toFixed(2)}`;
+                btcLastUpdatedElem.textContent = new Date(data.bitcoin.updated).toLocaleTimeString();
+    
+            }
+            // update the ethereum price here:
+            if(data.ethereum && data.ethereum.price){
+
+                ethPriceElem.textContent = `$${parseFloat(data.ethereum.price).toFixed(2)}`;
+                ethLastUpdatedElem.textContent = new Date(data.ethereum.updated).toLocaleTimeString();
+            }
+                console.log(res.json())
+
+
         } catch (err) {
             console.error("Error Fetching prices:",err)
         }

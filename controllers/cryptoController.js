@@ -6,16 +6,21 @@ const { getAlerts, createAlert } = require("../servies/alertServies");
 const fetchPrices = async (req, res) => {
     try {
         const prices = await getCryptoPrices();
-        if (prices) {
-            res.json(prices);
-        } else {
-            res.status(500).json({ error: "Failed to fetch prices." })
-        }
+        // check price sent or not 
+        console.log("Prices being sent to frontend: ",prices);
+        
+
+        if (!prices) {
+            res.status(500).json({ error: "Could not retrieve crypto prices" })
+        } 
+        res.json(prices);
 
     } catch (error) {
+        console.error("Controller Error fetching prices:", err);
         res.status(500).json({ error: "Server Error from cryptoController" })
 
     }
+
 }
 
 

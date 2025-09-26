@@ -4,17 +4,9 @@ require("dotenv").config();
 
 const API_URL = "https://api.coingecko.com/api/v3/simple/price"
 const API_KEY = process.env.CRYPTO_API_KEY;
-
+const CACHE_DURATION = 10; 
 async function getCryptoPrices(){
- try {
-    const cached = await redisClient.get("cryptoPrices");
-    if (cached){
-        console.log("Prices served from redis cache.");
-        return JSON.parse(cached);
-    } 
- } catch (error) {
-    console.error("Error checking from redis cache");
- }
+
 
 //  if not in cache fetch from the api
 try {
@@ -47,7 +39,10 @@ try {
             updated: Date.now()
         }
     };
-    await redisClient.set("cryptoPrices",JSON.stringify(data),"EX",10);
+    await redisClient.set("cryptoPrices", JSON.stringify(data), {
+        EX: CACHE_DURATION, 
+    });
+     console.log("Prices successfully cached in Redis with TTL:", CACHE_DURATION, "seconds");
     return data;
     
 } catch (error) {
