@@ -42,7 +42,7 @@ const updatePriceAndCheckAlert = async () =>{
 // Run the background job every 15 seconds
 // The CoinGecko API for free tier is usually rate-limited to 50 calls/minute,
 // so 15 seconds is a safe interval (4 calls per minute).
-setInterval(updatePriceAndCheckAlert,15000)
+// setInterval(updatePriceAndCheckAlert,15000)
 
 db.once('open', () => {
     app.listen(5000, () => console.log("Server running on port 5000"));

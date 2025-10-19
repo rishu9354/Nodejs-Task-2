@@ -1,5 +1,5 @@
 const { getCryptoPrices } = require("../servies/cryptoServies");
-const { getAlerts, createAlert } = require("../servies/alertServies");
+const { getAlerts, createAlert, triggerAlerts } = require("../servies/alertServies");
 
 // fetch the prices from API and return them
 
@@ -13,6 +13,7 @@ const fetchPrices = async (req, res) => {
         if (!prices) {
             res.status(500).json({ error: "Could not retrieve crypto prices" })
         } 
+        await triggerAlerts(prices)
         res.json(prices);
 
     } catch (error) {
